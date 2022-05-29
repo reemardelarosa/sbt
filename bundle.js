@@ -79,7 +79,7 @@ window.addEventListener("load", () => {
 
     // await getBalance(account);
     // await balanceOf(account);
-    // const transferAmount = 1; // This is a necessary conversion, contract methods use Wei, we want a readable Ether format
+    transferAmount = 1; // This is a necessary conversion, contract methods use Wei, we want a readable Ether format
     // listenToTransferEvent(account, destAddress, transferAmount); // Not an async function
     // await transfer(destAddress, transferAmount);
     const rawTransaction = {
@@ -89,7 +89,7 @@ window.addEventListener("load", () => {
       "gasLimit": "0x250CA",
       "to": sbtContractAddress,
       "value": "0x0",
-      // "data": contract.methods.transfer(destAddress, transferAmount).encodeABI(),
+      "data": contract.methods.transfer(destAddress, transferAmount).encodeABI(),
       "chainId": 5769
     };
 
@@ -131,7 +131,7 @@ window.addEventListener("load", () => {
     await connectContract(contractAbi, sbtContractAddress);
     await getBalance(account);
     // await balanceOf(account);
-    transferAmount = 1;
+    // transferAmount = 1;
     // const amount = web3.utils.toWei(value); // This is a necessary conversion, contract methods use Wei, we want a readable Ether format
     // listenToTransferEvent(account, sbtContractAddress, transferAmount); // Not an async function
     // await transfer(sbtContractAddress, transferAmount);
