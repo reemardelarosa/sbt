@@ -78,7 +78,7 @@ window.addEventListener("load", () => {
 
     // await getBalance(account);
     // await balanceOf(account);
-    transferAmount = 1; // This is a necessary conversion, contract methods use Wei, we want a readable Ether format
+    transferAmount = web3.utils.toWei("1"); // This is a necessary conversion, contract methods use Wei, we want a readable Ether format
     // listenToTransferEvent(account, destAddress, transferAmount); // Not an async function
     // await transfer(destAddress, transferAmount);
     const rawTransaction = {
