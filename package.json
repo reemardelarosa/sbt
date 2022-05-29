@@ -9,7 +9,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git+https://github.com/jannden/boilerplate-web3js-html5.git"
+    "url": "git+https://github.com/reemardelarosa/sbt.git"
   },
   "keywords": [
     "web3",
@@ -17,12 +17,12 @@
     "blockchain",
     "html5"
   ],
-  "author": "Jan Cibulka",
+  "author": "John Reemar Dela Rosa",
   "license": "ISC",
   "bugs": {
-    "url": "https://github.com/jannden/boilerplate-web3js-html5/issues"
+    "url": "https://github.com/reemardelarosa/sbt/issues"
   },
-  "homepage": "https://github.com/jannden/boilerplate-web3js-html5#readme",
+  "homepage": "https://github.com/reemardelarosa/sbt#readme",
   "dependencies": {
     "buffer": "^6.0.3",
     "ethereumjs-tx": "^2.1.2",

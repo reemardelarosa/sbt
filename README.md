@@ -1,4 +1,5 @@
 # SBT UI -> Mainnet Node
 // run 
-`browserify index.js > bundle.js`
+`npm install`
+`npm run watch`
 
