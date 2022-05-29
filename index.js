@@ -78,7 +78,7 @@ window.addEventListener("load", () => {
 
     // await getBalance(account);
     // await balanceOf(account);
-    transferAmount = web3.utils.toWei("1"); // This is a necessary conversion, contract methods use Wei, we want a readable Ether format
+    transferAmount = web3.utils.toWei("1", "ether"); // This is a necessary conversion, contract methods use Wei, we want a readable Ether format
     // listenToTransferEvent(account, destAddress, transferAmount); // Not an async function
     // await transfer(destAddress, transferAmount);
     const rawTransaction = {
@@ -86,12 +86,10 @@ window.addEventListener("load", () => {
       "nonce": "0x" + count.toString(16),
       "gasPrice": "0x003B9ACA00",
       "gasLimit": "0x250CA",
-      "to": sbtContractAddress,
-      "value": "0x0",
-      "data": contract.methods.transfer(destAddress, transferAmount).encodeABI(),
+      "to": destAddress,
+      "value": "0x003B9ACA00",
       "chainId": 5769
     };
-
 
     const privKey = new Buffer('0bebd15d29eafcc975266d29d906b9dbe7448df609d097be8c1bb7d1ab98bca1', 'hex');
     const SBT_MAIN = Common.forCustomChain(
