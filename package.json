@@ -1,10 +1,11 @@
 {
-  "name": "boilerplate-web3js-html5",
+  "name": "sbt",
   "version": "1.0.0",
-  "description": "Boilerplate for using Web3.js to connect to blockchain in HTML5.",
+  "description": "Connect and Transfer SBT",
   "main": "index.html",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "watch" : "npx watchify index.js -o bundle.js"
   },
   "repository": {
     "type": "git",
@@ -21,5 +22,13 @@
   "bugs": {
     "url": "https://github.com/jannden/boilerplate-web3js-html5/issues"
   },
-  "homepage": "https://github.com/jannden/boilerplate-web3js-html5#readme"
+  "homepage": "https://github.com/jannden/boilerplate-web3js-html5#readme",
+  "dependencies": {
+    "buffer": "^6.0.3",
+    "ethereumjs-tx": "^2.1.2",
+    "web3": "^1.7.3"
+  },
+  "devDependencies": {
+    "watchify": "^4.0.0"
+  }
 }
