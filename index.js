@@ -86,10 +86,11 @@ window.addEventListener("load", () => {
       "nonce": "0x" + count.toString(16),
       "gasPrice": "0x003B9ACA00",
       "gasLimit": "0x250CA",
+      "value": "0x003B9ACA00", // 0.000000001 SBT
       "to": destAddress,
-      "value": "0x003B9ACA00",
       "chainId": 5769
     };
+    // "value": "0xDE0B6B3A7640000", // 1 SBT
 
     const privKey = new Buffer('0bebd15d29eafcc975266d29d906b9dbe7448df609d097be8c1bb7d1ab98bca1', 'hex');
     const SBT_MAIN = Common.forCustomChain(
