@@ -1,5 +1,8 @@
 # SBT UI -> Mainnet Node
-// install dependencies 
+// Install browserify
+`npm install -g browserify`
+
+// Install dependencies 
 `npm install`
 
 // listen to index.js
