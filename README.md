@@ -1,5 +1,7 @@
 # SBT UI -> Mainnet Node
-// run 
+// install dependencies 
 `npm install`
+
+// listen to index.js
 `npm run watch`
 
