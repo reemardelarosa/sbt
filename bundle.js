@@ -1,29 +1,32 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-/*** SET THESE VARIABLES ***/
-const contractAddress = "0x4946583c5b86e01ccd30c71a05617d06e3e73060"; // Update with the address of your smart contract
-const contractAbi = "./sbtABI.json"; // Update with an ABI file, for example "./sampleAbi.json"
 const Web3 = require('web3');
 const Buffer = require('buffer/').Buffer // note: the trailing slash is important!
 const Tx = require('ethereumjs-tx').Transaction;
 const Common = require('ethereumjs-common').default;
 const bufferToHex = require('ethereumjs-util').bufferToHex;
 const privateToAddress = require('ethereumjs-util').privateToAddress;
+
+/*** SET THESE VARIABLES ***/
+const sbtContractAddress = "0x4946583c5b86e01ccd30c71a05617d06e3e73060"; // Update with the address of your smart contract
+const contractAbi = "./sbtABI.json"; // Update with an ABI file
+const web3 = new Web3(Web3.givenProvider || `http://proxy.sunblockterminal.com:7664`);
+const senderAddress = "0xf96f4F26188670a0730d5F65570b6589469c8301";
+const destAddress = "0xEED15870f5Bd6720C9bC3289981b885D1e0981D7";
 /*** Global scope variables that will be automatically assigned values later on ***/
 let infoSpace; // This is an <ul> element where we will print out all the info
-let web3; // Web3 instance
 let minABI;
 let contract; // Contract instance
 let account; // Your account as will be reported by Metamask
 let transferAmount;
-let destAddress;
 
 /*** Initialize when page loads ***/
 window.addEventListener("load", () => {
   // Shortcut to interact with HTML elements
   infoSpace = document.querySelector(".info");
 
+  // sending using metamask
   document.querySelector(".start").addEventListener("click", async () => {
-    if (contractAddress === "" || contractAbi === "") {
+    if (sbtContractAddress === "" || contractAbi === "") {
       printResult(
         `Make sure to set the variables <code>contractAddress</code> and <code>contractAbi</code> in <code>./index.js</code> first. Check out <code>README.md</code> for more info.`
       );
@@ -36,9 +39,23 @@ window.addEventListener("load", () => {
       );
       return;
     }
-    // Create a Web3 instance
-    web3 = new Web3(Web3.givenProvider || `http://proxy.sunblockterminal.com:7664`);
-    // web3 = new Web3(new Web3.providers.HttpProvider('http://proxy.sunblockterminal.com:7664'));
+    console.log(`web3 version: ${web3.version}`);
+
+    // Determine  the nonce
+    const count = await web3.eth.getTransactionCount(senderAddress);
+    console.log(`num transactions so far: ${count}`);
+
+    await connectWallet();
+    await connectContract(contractAbi, sbtContractAddress);
+    await getBalance(account);
+    transferAmount = 0.01 * Math.pow(10, 18);
+    transferAmount = "0x" + transferAmount.toString(16)
+    listenToTransferEvent(account, destAddress, transferAmount); // Not an async function
+    await transfer(destAddress, transferAmount);
+  });
+
+  // sending using web3.eth.sendSignedTransaction
+  document.querySelector(".raw").addEventListener("click", async () => {
     minABI = [
       // transfer
       {
@@ -64,34 +81,21 @@ window.addEventListener("load", () => {
     ];
     console.log(`web3 version: ${web3.version}`);
 
-    // Sender
-    const myAddress = "0xf96f4F26188670a0730d5F65570b6589469c8301";
-    // receiver
-    destAddress = "0xEED15870f5Bd6720C9bC3289981b885D1e0981D7";
     // Determine  the nonce
-    const count = await web3.eth.getTransactionCount(myAddress);
+    const count = await web3.eth.getTransactionCount(senderAddress);
     console.log(`num transactions so far: ${count}`);
 
-    // This is the address of the contract which created the ERC20 token
-    const sbtContractAddress = "0x4946583c5b86e01ccd30c71a05617d06e3e73060";
-    const contract = new web3.eth.Contract(minABI, sbtContractAddress);
-
-
-    // await getBalance(account);
-    // await balanceOf(account);
-    transferAmount = web3.utils.toWei("1", "ether"); // This is a necessary conversion, contract methods use Wei, we want a readable Ether format
-    // listenToTransferEvent(account, destAddress, transferAmount); // Not an async function
-    // await transfer(destAddress, transferAmount);
+    transferAmount = 0.01 * Math.pow(10, 18); // 0.01 SBT, 18 decimals
+    console.log("transferAmount", transferAmount);
     const rawTransaction = {
-      "from": myAddress,
+      "from": senderAddress,
       "nonce": "0x" + count.toString(16),
       "gasPrice": "0x003B9ACA00",
       "gasLimit": "0x250CA",
-      "value": "0x003B9ACA00", // 0.000000001 SBT
+      "value": "0x" + transferAmount.toString(16), 
       "to": destAddress,
       "chainId": 5769
     };
-    // "value": "0xDE0B6B3A7640000", // 1 SBT
 
     const privKey = new Buffer('0bebd15d29eafcc975266d29d906b9dbe7448df609d097be8c1bb7d1ab98bca1', 'hex');
     const SBT_MAIN = Common.forCustomChain(
@@ -123,17 +127,9 @@ window.addEventListener("load", () => {
     console.log("The transaction's chain id is", tx.getChainId())
     const receipt = await web3.eth.sendSignedTransaction('0x' + serializedTx.toString('hex'));
     console.log(`Receipt info: ${JSON.stringify(receipt, null, '\t')}`);
-    // console.log("Transferred 1 SBT");
-    // The balance may not bu updated yet, but let's check
-    // Calling desired functions
     await connectWallet();
     await connectContract(contractAbi, sbtContractAddress);
     await getBalance(account);
-    // await balanceOf(account);
-    // transferAmount = 1;
-    // const amount = web3.utils.toWei(value); // This is a necessary conversion, contract methods use Wei, we want a readable Ether format
-    // listenToTransferEvent(account, sbtContractAddress, transferAmount); // Not an async function
-    // await transfer(sbtContractAddress, transferAmount);
   });
 });
 
