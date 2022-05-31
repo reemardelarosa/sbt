@@ -9,7 +9,7 @@ const privateToAddress = require('ethereumjs-util').privateToAddress;
 /*** SET THESE VARIABLES ***/
 const sbtContractAddress = "0x4946583c5b86e01ccd30c71a05617d06e3e73060"; // Update with the address of your smart contract
 const contractAbi = "./sbtABI.json"; // Update with an ABI file
-const web3 = new Web3(Web3.givenProvider || `http://proxy.sunblockterminal.com:7664`);
+const web3 = new Web3(Web3.givenProvider || `https://proxy4.sbtgallery.com:7664`);
 const senderAddress = "0xf96f4F26188670a0730d5F65570b6589469c8301";
 const destAddress = "0xEED15870f5Bd6720C9bC3289981b885D1e0981D7";
 /*** Global scope variables that will be automatically assigned values later on ***/
@@ -105,7 +105,7 @@ window.addEventListener("load", () => {
         chainId: 5769
       },
       'petersburg'
-    )
+    );
 
     const tx = new Tx(rawTransaction, {
       common: SBT_MAIN
